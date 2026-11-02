@@ -412,6 +412,8 @@ y agrega `hora`, `estadoCodigo` y `estadoDescripcion`:
     "hora": "07:30:45",
     "persona": "Ana Pérez",
     "tipo": "ESTUDIANTE",
+    "grado": "5to",
+    "seccion": "A",
     "estado": "PUNTUAL",
     "estadoCodigo": "P",
     "estadoDescripcion": "Presente - asistió puntual"
@@ -419,10 +421,29 @@ y agrega `hora`, `estadoCodigo` y `estadoDescripcion`:
 ]
 ```
 
-En el Excel se muestran las columnas `Fecha`, `Hora`, `Persona`, `Tipo`,
-`Estado`, `Código` y `Descripción`. Para una asistencia con estado `FALTA`, la
-hora se devuelve vacía, porque no hay una hora de asistencia registrada.
-Actualmente el reporte contiene registros almacenados; no genera
+El Excel organiza la asistencia como una matriz: `N°`, `Nombre completo`,
+`Grado`, `Sección`, totales `P`, `T` y `F`, seguidos de una columna por cada
+día laborable del periodo. Se excluyen sábados y domingos. Cada celda muestra
+el código de estado y, cuando existe, la hora de ingreso en una segunda línea.
+`P` tiene fondo claro, `T` amarillo y `F` rojo. Las columnas de numeración,
+nombre, grado y sección quedan inmovilizadas al desplazarse por las fechas.
+La lista de personas y sus datos proviene de los registros existentes; si una
+persona no tiene asistencias en el periodo, se muestra con totales en cero y
+celdas vacías. No se crean asistencias ni se requiere modificar la base de
+datos para generar el archivo.
+
+| Dato del reporte            | Respuesta JSON | Columna del Excel |
+| --------------------------- | -------------- | ----------------- |
+| Grado escolar de la persona | `grado`        | `Grado`           |
+| Sección del estudiante      | `seccion`      | `Sección`         |
+
+Para estudiantes, estos valores identifican de qué grado y sección son. Para
+personal y para registros antiguos sin esos datos, el JSON devuelve `null` y
+las celdas del Excel quedan vacías.
+
+Enviar `fechaInicio` y `fechaFin` para establecer el periodo del reporte. Si no
+se envían, el Excel usa desde la primera hasta la última fecha de los registros
+encontrados. El reporte contiene registros almacenados; no genera
 automáticamente filas de falta para personas que no registraron asistencia.
 
 ## Errores y experiencia de usuario
